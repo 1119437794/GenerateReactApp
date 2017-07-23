@@ -1,0 +1,19 @@
+.basic {
+    @at-root {
+        &_root {
+            width: 100%;
+            color: #fff;
+            background-color: #252526;
+        }
+
+        &_ui {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 4px;
+            border: 1px solid gray;
+            color: #fff;
+            cursor: pointer;
+            background-color: transparent;
+        }
+    }
+}

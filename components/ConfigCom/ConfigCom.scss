@@ -1,0 +1,38 @@
+.config {
+    @at-root {
+        &_root {
+            width: 100%;
+            color: #fff;
+            background-color: #252526;
+        }
+
+        &_input {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            margin-bottom: 4px;
+            
+            &Title {
+                margin-right: 10px;
+            }
+
+            &Field {
+                padding: 10px;
+                border-radius: 4px;
+                font-size: 12px;
+                outline: none;
+            }
+        }
+
+        &_btn {
+            width: 100%;
+            padding: 10px 0;
+            border-radius: 4px;
+            border: 1px solid gray;
+            color: #fff;
+            cursor: pointer;
+            background-color: transparent;
+        }
+    }
+}

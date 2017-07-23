@@ -1,0 +1,32 @@
+.list {
+    @at-root {
+        &_root {
+            position: absolute;
+            list-style: none;
+            border: 1px solid gray;
+            border-radius: 4px;
+        }
+
+        &_item {
+            display: flex;
+            height: 40px;
+            align-items: center;
+            justify-content: space-between;
+            &:not(:last-of-type) {
+                border-bottom: 1px solid gray;
+            }
+
+            span {
+                display: flex;
+                flex: 1;
+                height: 100%;
+                align-items: center;
+                justify-content: center;
+    
+                &:not(:last-of-type) {
+                    border-right: 1px solid gray;
+                }
+            }
+        }
+    }
+}

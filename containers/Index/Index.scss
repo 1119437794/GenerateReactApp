@@ -1,0 +1,23 @@
+.index {
+    @at-root {
+        &_root {
+            display: flex;
+            height: 100%;
+        }
+
+        &_config {
+            display: flex;
+            flex: 1;
+        }
+
+        &_edit {
+            display: flex;
+            flex: 3;
+        }
+
+        &_coms {
+            display: flex;
+            flex: 1;
+        }
+    }
+}

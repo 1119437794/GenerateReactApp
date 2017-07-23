@@ -1,0 +1,20 @@
+.input {
+    @at-root {
+        &_root {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        &_title {
+        }
+
+        &_input {
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            outline: none;
+        }
+    }
+}
