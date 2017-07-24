@@ -10,7 +10,7 @@ import UIInfo from '../../statics/config/UIInfo.js';
 
 const mockData = {
     0: [
-        [10, 20, 30, 40],
+        [101, 20, 30, 40],
         [10, 20, 30, 40]
     ],
     1: [
@@ -18,7 +18,7 @@ const mockData = {
         [11, 21, 31, 41]
     ],
     2: [
-        [12, 22, 32, 42],
+        [102, 22, 32, 42],
         [12, 22, 32, 42]
     ]
 };
@@ -34,7 +34,6 @@ const mockFunc = {
     '2': function () {
         const index = this.state.editData[0];
         this.state.editData[1] = mockData[index];
-        console.log('this.state.editData', this.state.editData)
         this.setState({
             editData: this.state.editData
         })
@@ -122,7 +121,6 @@ class Index extends Component {
             let Child = this.loadComponent(item.name);
             let configItem = config[index] || this.setConfigItem(Child);
             let tmpConfigItem = Object.assign({}, configItem);
-            console.log('tmpConfigItem', tmpConfigItem)
 
             for (let key in tmpConfigItem) {
                 const tmpVal = tmpConfigItem[key];
