@@ -5,8 +5,12 @@ import { AddSetEditable } from '../../mixins/index';
 @AddSetEditable
 class Btn extends Component {
     static defaultProps = {
-        name: '按钮',
-        clickCallback: () => console.log('默认事件')
+        name: '确定',
+        dataIn: '', // 输入源绑定
+        dataOutput: '', // 输出源绑定
+        API: '', // 接口提供 可选
+        W: 90,
+        H: 30
     }
 
     constructor(props) {
@@ -17,16 +21,26 @@ class Btn extends Component {
     }
 
     render () {
-        const { name, clickCallback, style} = this.props;
+        const {
+            name,
+            style,
+            dataOutput,
+            component_id
+        } = this.props;
         const { rootClassName } = this.state;
+
+        let fixedDataOutput = typeof dataOutput === 'function' ? dataOutput : () => console.log('默认输出回调')
 
         return (
             <button 
                 ref={ ref => this.rootDom = ref }
                 className={rootClassName}
                 style={style}
-                onClick={clickCallback}
-            >{name}</button>
+                onClick={(e) => fixedDataOutput(e.target.value)}
+            >
+                {name}
+                <span className="com_id"> {component_id} </span>
+            </button>
         )
     }
 }

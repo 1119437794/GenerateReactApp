@@ -14,16 +14,18 @@ class ConfigCom extends Component {
 
     render () {
         const configItem = this.props.configItem;
+        const comNo = configItem.comNo;
+        delete configItem.comNo;
         const configItemKeys = Object.keys(configItem);
         this.configInfo = configItem;
 
         return (
             <div className='config_root'>
                 {
-                    configItemKeys.map((item) => {
+                    configItemKeys.map((item, index) => {
                         return (
                             <TmpInput 
-                                key = {`${item}_${window.CURR_UI_ID}`}
+                                key = {`${comNo}_${index}`}
                                 title = {item}
                                 value = {configItem[item]}
                                 handleChange = {this.tmpInputCallback}

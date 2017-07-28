@@ -5,9 +5,22 @@ import { AddSetEditable } from '../../mixins/index';
 @AddSetEditable
 class ListView extends Component {
     static defaultProps = {
-        // TODO 注意代码健壮性
-        // TODO 有的字段是可以写死的 但有些是引用store里数据 注意区分
-        listBindStore: []
+        // 绑定输入源
+        dataIn: '',
+        // 表头信息
+        column: JSON.stringify([
+            {
+                title: '序号',
+                key: 'ID'
+            },
+            {
+                title: '产品名称',
+                key: 'proName'
+            }
+        ]),
+        // 宽 高
+        W: 200,
+        H: 82,
     }
 
     constructor(props) {
@@ -18,8 +31,24 @@ class ListView extends Component {
     }
 
     render () {
-        const { style, listBindStore } = this.props;
         const { rootClassName } = this.state;
+        const {style, dataIn, component_id, column} = this.props;
+        let fixedCoumn = null;
+        let fixedDataIn = dataIn;
+        try {
+            fixedCoumn = JSON.parse(column);
+        } catch (err) {
+            return false;
+        }
+
+        if (!Array.isArray(dataIn)) {
+            fixedDataIn = [
+                {
+                    ID: 101010,
+                    proName: 'CAMERA360'
+                }
+            ]
+        }
 
         return (
             <ul 
@@ -28,23 +57,25 @@ class ListView extends Component {
                 style={style}
             >
                 <li className='list_item'>
-                    <span>标题1</span>
-                    <span>标题2</span>
-                    <span>标题3</span>
-                    <span>标题4</span>
+                    {
+                        fixedCoumn.map((item, index) => {
+                            return <span key={index}>
+                                {item.title}
+                            </span>
+                        })
+                    }
                 </li>
                 {
-                    listBindStore.map((item, index) => {
-                        const tmpItem = Array.isArray(item) ? item : [];
+                    fixedDataIn.map((rowItem, rowIndex) => {
                         return (
                             <li
-                                key = {index}
+                                key = {rowIndex}
                                 className = 'list_item'
                             >
                                 {
-                                    tmpItem.map((item, index) => {
+                                    fixedCoumn.map((colItem, colIndex) => {
                                         return (
-                                            <span key = {index}>{item}</span>
+                                            <span key = {colIndex}>{rowItem[colItem.key]}</span>
                                         )
                                     })
                                 }
@@ -52,7 +83,7 @@ class ListView extends Component {
                         )
                     })
                 }
-
+                <span className="com_id"> {component_id} </span>
             </ul> 
         )
     }

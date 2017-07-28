@@ -1,5 +1,6 @@
 /**
  * 添加设置可编辑状态
+ * TODO 通过类的方式实现 不是原型继承
  */ 
 export const AddSetEditable = (target) => {
 
@@ -18,8 +19,6 @@ export const AddSetEditable = (target) => {
         const currClassName = this.state.rootClassName;
 
         if (!currClassName.includes('editable')){
-            window.CURR_UI_ID = this.props.id;
-
             this.setState({
                 rootClassName: currClassName + ' editable'
             });
@@ -38,8 +37,9 @@ export const AddSetEditable = (target) => {
         this.setEditable();
         clickOthersCallback.call(this);
         this.rootDom.addEventListener('dblclick', () => {
+            "use strict";
             this.setEditable();
-            this.props.dbClick(this.props.id);
+            this.props.dbClick(this.props.id) // 设置当前编辑状态的组件ID;
         });
     }
 }

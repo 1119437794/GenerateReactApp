@@ -2,9 +2,9 @@
     @at-root {
         &_root {
             position: absolute;
-            list-style: none;
-            border: 1px solid gray;
             border-radius: 4px;
+            border: 1px solid gray;
+            list-style: none;
         }
 
         &_item {
