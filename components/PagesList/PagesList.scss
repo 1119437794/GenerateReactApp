@@ -1,0 +1,25 @@
+.pageList {
+  @at-root {
+    &_root {
+      padding: 10px 0;
+    }
+
+    %item {
+      height: 40px;
+      line-height: 40px;
+      border-bottom: 1px solid darkgray;
+      list-style: none;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    &_item {
+      @extend %item;
+
+      &:hover, &-active {
+        @extend %item;
+        background-color: #1E1E1E;
+      }
+    }
+  }
+}

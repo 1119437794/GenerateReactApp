@@ -63,6 +63,10 @@ class Input extends Component {
             </div>
         )
     }
+
+    componentDidMount () {
+        console.log('Input this.rootDom', this);
+    }
 }
 
 export default Input;

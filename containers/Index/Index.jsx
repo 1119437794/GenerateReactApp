@@ -7,6 +7,8 @@ import ConfigCom from '../../components/ConfigCom/ConfigCom';
 import EditPage from '../../components/EditPage/EditPage';
 import BasicUI from '../../components/BasicUI/BasicUI';
 import UIInfo from '../../statics/config/UIInfo.js'; // 组件库配置
+import Tool from '../../components/Tool/Tool';
+import PagesList from '../../components/PagesList/PagesList';
 
 const mockData = {
     0: [
@@ -51,8 +53,16 @@ class Index extends Component {
     constructor (props) {
         super(props);
 
+        /*
+        * 整个项目配置
+        * 每个数组项包括 ui 和 config
+        * */
+        this.allConfig = [];
+
         this.state = {
             comCurrId: 0, // 当前组件的ID
+            previewUrl: '', // 预览地址
+            pageList: ['第1个页面'], // 配置的页面
             ui: [], // 所有添加的UI组件
             config: {}, // 所有添加的UI组件的配置信息
         };
@@ -60,20 +70,20 @@ class Index extends Component {
         /**
          * 组件库回调
          * @param UIItemInfo { Obj } 添加的某个组件信息
-         */ 
+         */
         this.basicUICallback = (UIItemInfo) => {
             const ui = this.state.ui;
             ui.push(UIItemInfo);
             const comCurrId = ui.length - 1;
             this.state.comCurrId = comCurrId;
             this.state[`${UIItemInfo.name}_${comCurrId}`] = {}; // 为每一个组件绑定一个全局store 以便组件数据通信
-            this.setState({ ui });
+            this.setState({ui});
         };
 
         /**
          * 按需加载组件
          * @param componentName { Str } 组件名
-         */ 
+         */
         this.loadComponent = (componentName) => {
             return require(`../../components/${componentName}/${componentName}.jsx`).default;
         }
@@ -81,7 +91,7 @@ class Index extends Component {
         /**
          * 设置组件默认配置项参数
          * @param component { Func } 组件
-         */ 
+         */
         this.setConfigItem = (component) => {
             return Object.assign(component.defaultProps, {
                 // 默认设置组件 X/Y 坐标
@@ -93,7 +103,7 @@ class Index extends Component {
         /**
          * 配置组件回调
          * @param config { Obj } 某个组件的配置信息
-         */ 
+         */
         this.configComCallback = (config) => {
             this.state.config[this.state.comCurrId] = Object.assign({}, config); // 这里浅拷贝
             this.setState({
@@ -109,10 +119,11 @@ class Index extends Component {
         }
 
         // 预览
-        this.handlePreview = () => {
+        this.handlePublish = () => {
             const headers = new Headers();
             const {ui, config} = this.state;
             headers.append('Content-Type', 'application/json'); // 必须设置Content-Type 否则Node接收不到
+            headers.append('Access-Control-Allow-Origin', '*'); // 必须设置Content-Type 否则Node接收不到
             const req = new Request('/postPageConfig', {
                 headers: headers,
                 method: 'post',
@@ -125,14 +136,39 @@ class Index extends Component {
             fetch(req)
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res);
+                    this.setState({
+                        previewUrl: res.url
+                    })
+                })
+        }
+
+        // 切换页面
+        this.handleChangePage = (prevIndex, nextIndex) => {
+            const {ui, config, pageList} = this.state;
+            const tmpConfig = this.allConfig[nextIndex];
+            this.allConfig[prevIndex] = { ui, config };
+
+            if (tmpConfig) {
+                this.setState({
+                    ui: tmpConfig.ui,
+                    config: tmpConfig.config
                 });
+            } else {
+                pageList.push(`第${nextIndex + 1}个页面`);
+                this.setState({
+                    ui: [],
+                    config: {},
+                    pageList
+                });
+            }
         }
     }
 
     render () {
         let curConfigItem = {}; // 当前组件配置项
-        const { ui, config } = this.state;
+        const { previewUrl, pageList, ui, config } = this.state;
+        const tmpPageList = [...pageList];
+        tmpPageList.push('新增页面');
 
         // 设置页面编辑界面
         const EditPageChildren = ui.map((item, index) => {
@@ -161,16 +197,27 @@ class Index extends Component {
             // 针对dataIn dataOutput做转换处理，绑定到store上去
             const { dataIn, dataOutput } = tmpConfigItem;
             if (dataIn) {
-                this.state[comNo] = this.state[dataIn];
-                tmpConfigItem.dataIn = this.state[comNo];
+                if (dataIn.includes(',')) {
+                    const tmpDataIn = {};
+                    dataIn.split(',').map((item) => {
+                        tmpDataIn[item] = this.state[item];
+                    });
+
+                    this.state[comNo] = tmpDataIn;
+                    tmpConfigItem.dataIn = tmpDataIn;
+                } else {
+                    this.state[comNo] = this.state[dataIn];
+                    tmpConfigItem.dataIn = this.state[comNo];
+                }
             }
 
             if (dataOutput) {
                 tmpConfigItem.dataOutput = (val) => {
                     if (tmpConfigItem.API) {
                         // TODO 发一个请求
+                        console.log('comNo', this.state[comNo]);
                         this.setState({
-                            [dataOutput]: mockData[this.state[dataIn]] // 根据输入参数请求接口，然后返回对应数据
+                            [dataOutput]: mockData[this.state[comNo]] // 根据输入参数请求接口，然后返回对应数据
                         })
                     } else {
                         this.setState({
@@ -213,13 +260,20 @@ class Index extends Component {
                         list = {UIInfo}
                         handleClick = {this.basicUICallback}
                     ></BasicUI>
-                </div>
 
-                <div className="index_tool">
-                    <button
-                        className="index_preview"
-                        onClick={this.handlePreview}
-                    >预览</button>
+                    <div className="index_tool">
+                        <Tool
+                            previewUrl={previewUrl}
+                            publishCB={this.handlePublish}
+                        />
+                    </div>
+
+                    <div className="index_page">
+                        <PagesList
+                            pageList={tmpPageList}
+                            addNewPageCB={this.handleChangePage}
+                        />
+                    </div>
                 </div>
             </div>     
         )
